@@ -19,16 +19,15 @@ import java.util.List;
 public class AdminHorarioDisponibilidadController {
     private final AdminHorarioDisponibilidadService adminHorarioDisponibilidadService;
 
-
     @GetMapping
-    public ResponseEntity<List<Horario_Disponibilidad>> getAllCitas(){
+    public ResponseEntity<List<Horario_Disponibilidad>> getAllHorarios(){
         List<Horario_Disponibilidad> horarios = adminHorarioDisponibilidadService.getAll();
         return new ResponseEntity<List<Horario_Disponibilidad>>(horarios, HttpStatus.OK);
 
     }
 
     @GetMapping("/page")
-    public ResponseEntity<Page<Horario_Disponibilidad>> paginateCitas(
+    public ResponseEntity<Page<Horario_Disponibilidad>> paginateHorarios(
             @PageableDefault(size = 2, sort = "veterinario") Pageable pageable){
         Page<Horario_Disponibilidad> horarios = adminHorarioDisponibilidadService.paginate(pageable);
         return new ResponseEntity<Page<Horario_Disponibilidad>>(horarios,HttpStatus.OK);
@@ -85,7 +84,7 @@ public class AdminHorarioDisponibilidadController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Horario_Disponibilidad> deleteCita(@PathVariable("id") Integer id){
+    public ResponseEntity<Horario_Disponibilidad> deleteHorario(@PathVariable("id") Integer id){
         adminHorarioDisponibilidadService.delete(id);
         return new ResponseEntity<Horario_Disponibilidad>(HttpStatus.NO_CONTENT);
     }
