@@ -1,5 +1,6 @@
 package com.example.model.entity;
 
+import com.example.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -23,7 +24,14 @@ public class Dueno {
     @Column(name = "direccion", nullable = false, length = 60)
     private String direccion;
 
-    @OneToOne
-    @JoinColumn(name = "usuario_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_Dueno_Usuario"))
-    private Usuario usuario;
+    @Column(name = "correo")
+    private String correo;
+
+    @Column(name = "contrasena")
+    private String contrasena;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rol")
+    private Role rol;
+
 }

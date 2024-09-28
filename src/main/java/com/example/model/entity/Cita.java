@@ -27,10 +27,9 @@ public class Cita {
     private CitaStatus estado;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_Cita_Usuario"))
-    private Usuario usuario;
+    @JoinColumn(name = "dueno_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_Cita_Dueno"))
+    private Dueno dueno;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "veterinario_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_Cita_Veterinario"))
     private Veterinario veterinario;

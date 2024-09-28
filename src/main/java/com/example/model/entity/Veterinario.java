@@ -1,5 +1,6 @@
 package com.example.model.entity;
 
+import com.example.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,4 +21,14 @@ public class Veterinario {
 
     @Column(name = "especialidad", nullable = false, length = 50)
     private String especialidad;
+
+    @Column(name = "correo")
+    private String correo;
+
+    @Column(name = "contrasena")
+    private String contrasena;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rol")
+    private Role rol;
 }
