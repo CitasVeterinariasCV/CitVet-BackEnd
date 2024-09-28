@@ -42,7 +42,7 @@ public class AdminCitaController {
 
     @PostMapping
     public ResponseEntity<Cita> createCita(@RequestBody CitaDTO citaDTO) {
-// Validación básica de campos nulos
+        // Validación básica de campos nulos
         if (citaDTO == null || citaDTO.getFecha() == null ||
                 citaDTO.getDuenoId() == null || citaDTO.getVeterinarioId() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

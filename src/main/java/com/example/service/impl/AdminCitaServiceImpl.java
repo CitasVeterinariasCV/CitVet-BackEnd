@@ -71,10 +71,7 @@ public class AdminCitaServiceImpl implements AdminCitaService {
     @Override
     public Cita update(Integer id, Cita updatecita) {
         Cita citaFromDb = findById(id);
-        citaFromDb.setFecha(LocalDateTime.now());
-        citaFromDb.setDescripcion(updatecita.getDescripcion());
         citaFromDb.setEstado(updatecita.getEstado());
-        citaFromDb.setVeterinario(updatecita.getVeterinario());
         return citaRepository.save(citaFromDb);
     }
 
