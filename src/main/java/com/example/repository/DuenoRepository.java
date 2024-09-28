@@ -1,8 +1,8 @@
 package com.example.repository;
 
-import com.example.model.entity.Veterinario;
+import com.example.model.entity.Dueno;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface VeterinarioRepository extends JpaRepository<Veterinario, Integer> {
+public interface DuenoRepository extends JpaRepository<Dueno, Integer> {
     boolean existsByCorreo(String correo);
 }
