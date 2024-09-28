@@ -1,8 +1,13 @@
 package com.example.service.impl;
 
 import com.example.model.entity.Cita;
+import com.example.model.entity.Dueno;
+import com.example.model.entity.Veterinario;
 import com.example.repository.CitaRepository;
+import com.example.repository.DuenoRepository;
+import com.example.repository.VeterinarioRepository;
 import com.example.service.AdminCitaService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +21,8 @@ import java.util.List;
 @Service
 public class AdminCitaServiceImpl implements AdminCitaService {
     private final CitaRepository citaRepository;
+    private final DuenoRepository duenoRepository;
+    private final VeterinarioRepository veterinarioRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -38,7 +45,25 @@ public class AdminCitaServiceImpl implements AdminCitaService {
 
     @Transactional
     @Override
-    public Cita create(Cita cita) {
+    public Cita create(Cita cita, Integer duenoId, Integer veterinarioId) {
+        if (cita == null) {
+            throw new IllegalArgumentException("La cita no puede ser nula");
+        }
+
+        if (duenoId == null || veterinarioId == null) {
+            throw new IllegalArgumentException("El ID del dueño o veterinario no puede ser nulo");
+        }
+
+        Dueno dueno = duenoRepository.findById(duenoId)
+                .orElseThrow(() -> new EntityNotFoundException("Dueño no encontrado con ID: " + duenoId));
+        Veterinario veterinario = veterinarioRepository.findById(veterinarioId)
+                .orElseThrow(() -> new EntityNotFoundException("Veterinario no encontrado con ID: " + veterinarioId));
+
+        // Asignar dueño y veterinario a la cita
+        cita.setDueno(dueno);
+        cita.setVeterinario(veterinario);
+
+        // Guardar y retornar la cita
         return citaRepository.save(cita);
     }
 

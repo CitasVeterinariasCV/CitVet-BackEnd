@@ -1,7 +1,9 @@
 package com.example.api;
 
+import com.example.dto.CitaDTO;
 import com.example.model.entity.Cita;
 import com.example.service.AdminCitaService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -39,10 +41,35 @@ public class AdminCitaController {
     }
 
     @PostMapping
-    public ResponseEntity<Cita> createCita(@RequestBody Cita cita){
-        Cita newCita = adminCitaService.create(cita);
-        return new ResponseEntity<Cita>(newCita,HttpStatus.CREATED);
+    public ResponseEntity<Cita> createCita(@RequestBody CitaDTO citaDTO) {
+// Validación básica de campos nulos
+        if (citaDTO == null || citaDTO.getFecha() == null ||
+                citaDTO.getDuenoId() == null || citaDTO.getVeterinarioId() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
+        try {
+            // Crear la nueva entidad Cita
+            Cita cita = new Cita();
+            cita.setFecha(citaDTO.getFecha());
+            cita.setDescripcion(citaDTO.getDescripcion());
+            cita.setEstado(citaDTO.getEstado());
+
+            // Llamar al servicio para guardar la cita
+            Cita newCita = adminCitaService.create(cita, citaDTO.getDuenoId(), citaDTO.getVeterinarioId());
+
+            // Retornar la respuesta con el nuevo objeto creado
+            return new ResponseEntity<>(newCita, HttpStatus.CREATED);
+        } catch (EntityNotFoundException e) {
+            // Manejar el caso en que no se encuentra el dueño o veterinario
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            // Manejar el caso en que se pasa un argumento inválido
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            // Manejo general de excepciones
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping("/{id}")

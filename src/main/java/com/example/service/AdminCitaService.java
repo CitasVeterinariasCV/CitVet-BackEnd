@@ -10,7 +10,7 @@ public interface AdminCitaService {
     List<Cita> getAll();
     Page<Cita> paginate(Pageable pageable);
     Cita findById(Integer id);
-    Cita create(Cita cita);
+    Cita create(Cita cita, Integer duenoId, Integer veterinarioId);
     Cita update(Integer id, Cita updatecita);
     void delete(Integer id);
 }
