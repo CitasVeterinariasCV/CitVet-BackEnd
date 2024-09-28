@@ -17,44 +17,12 @@ import java.util.List;
 public class AdminVeterinarioServiceImpl implements AdminVeterinarioService {
     private final VeterinarioRepository veterinarioRepository;
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<Veterinario> getAll() {
-        return veterinarioRepository.findAll();
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Page<Veterinario> paginate(Pageable pageable) {
-        return veterinarioRepository.findAll(pageable);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Veterinario findById(Integer id) {
-        return veterinarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Veterinario no encontrado"));
-    }
-
     @Transactional
     @Override
-    public Veterinario create(Veterinario veterinario) {
+    public Veterinario registerVeterinario(Veterinario veterinario) {
+        if(veterinarioRepository.existsByCorreo(veterinario.getCorreo())){
+            throw new RuntimeException("El correo ya está registrado");
+        }
         return veterinarioRepository.save(veterinario);
-    }
-
-    @Transactional
-    @Override
-    public Veterinario update(Integer id, Veterinario updateveterinario) {
-        Veterinario veterinarioFromDb = findById(id);
-        veterinarioFromDb.setNombre(updateveterinario.getNombre());
-        veterinarioFromDb.setApellido(updateveterinario.getApellido());
-        veterinarioFromDb.setEspecialidad(updateveterinario.getEspecialidad());
-        return veterinarioRepository.save(veterinarioFromDb);
-    }
-
-    @Transactional
-    @Override
-    public void delete(Integer id) {
-        Veterinario veterinario = findById(id);
-        veterinarioRepository.delete(veterinario);
     }
 }
