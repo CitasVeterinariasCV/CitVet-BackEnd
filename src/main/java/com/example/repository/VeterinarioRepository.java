@@ -4,5 +4,5 @@ import com.example.model.entity.Veterinario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface VeterinarioRepository extends JpaRepository<Veterinario, Integer> {
-    boolean existsByCorreo(String corre);
+    boolean existsByCorreo(String correo);
 }
