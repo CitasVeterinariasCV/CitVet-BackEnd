@@ -68,8 +68,8 @@ public class AdminHorarioDisponibilidadServiceImpl implements AdminHorarioDispon
     @Override
     public Horario_Disponibilidad update(Integer id, Horario_Disponibilidad updateHorarioDisponibilidad) {
         Horario_Disponibilidad horarioDisponibilidadFromDb = findById(id);
-        horarioDisponibilidadFromDb.setHora_inicio(LocalDateTime.now());
-        horarioDisponibilidadFromDb.setHora_fin(LocalDateTime.now());
+        horarioDisponibilidadFromDb.setHora_inicio(updateHorarioDisponibilidad.getHora_inicio());
+        horarioDisponibilidadFromDb.setHora_fin(updateHorarioDisponibilidad.getHora_fin());
         return horarioDisponibilidadRepository.save(horarioDisponibilidadFromDb);
     }
 
