@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -40,9 +41,33 @@ public class AdminCitaController {
 
     }
 
+    @GetMapping("/dueno/{duenoId}")
+    public ResponseEntity<List<CitaDTO>> getCitaByDuenoId(@PathVariable("duenoId") Integer duenoId) {
+        List<Cita> citas = adminCitaService.getCitaByDuenoId(duenoId);
+
+        // Convertir la lista de Cita a CitaDTO
+        List<CitaDTO> citaDTOList = citas.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(citaDTOList);
+    }
+
+    @GetMapping("/veterinario/{veterinarioId}")
+    public ResponseEntity<List<CitaDTO>> getCitaByVeterinarioId(@PathVariable("veterinarioId") Integer veterinarioId){
+        List<Cita> citas = adminCitaService.getCitaByVeterinarioId(veterinarioId);
+
+        // Convertir la lista de Cita a CitaDTO
+        List<CitaDTO> citaDTOList = citas.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(citaDTOList);
+    }
+
     @PostMapping
     public ResponseEntity<Cita> createCita(@RequestBody CitaDTO citaDTO) {
-// Validación básica de campos nulos
+            // Validación básica de campos nulos
         if (citaDTO == null || citaDTO.getFecha() == null ||
                 citaDTO.getDuenoId() == null || citaDTO.getVeterinarioId() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -53,7 +78,6 @@ public class AdminCitaController {
             Cita cita = new Cita();
             cita.setFecha(citaDTO.getFecha());
             cita.setDescripcion(citaDTO.getDescripcion());
-            cita.setEstado(citaDTO.getEstado());
 
             // Llamar al servicio para guardar la cita
             Cita newCita = adminCitaService.create(cita, citaDTO.getDuenoId(), citaDTO.getVeterinarioId());
@@ -84,6 +108,16 @@ public class AdminCitaController {
     public ResponseEntity<Cita> deleteCita(@PathVariable("id") Integer id){
         adminCitaService.delete(id);
         return new ResponseEntity<Cita>(HttpStatus.NO_CONTENT);
+    }
+
+    private CitaDTO convertToDTO(Cita cita) {
+        CitaDTO citaDTO = new CitaDTO();
+        citaDTO.setFecha(cita.getFecha());
+        citaDTO.setDescripcion(cita.getDescripcion());
+        citaDTO.setEstado(cita.getEstado());
+        citaDTO.setDuenoId(cita.getDueno().getId());
+        citaDTO.setVeterinarioId(cita.getVeterinario().getId());
+        return citaDTO;
     }
 
 }

@@ -11,6 +11,8 @@ public interface AdminCitaService {
     Page<Cita> paginate(Pageable pageable);
     Cita findById(Integer id);
     Cita create(Cita cita, Integer duenoId, Integer veterinarioId);
+    List<Cita> getCitaByDuenoId(Integer duenoId);
+    List<Cita> getCitaByVeterinarioId(Integer veterinarioId);
     Cita update(Integer id, Cita updatecita);
     void delete(Integer id);
 }

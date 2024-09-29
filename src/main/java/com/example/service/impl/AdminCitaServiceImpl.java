@@ -3,6 +3,7 @@ package com.example.service.impl;
 import com.example.model.entity.Cita;
 import com.example.model.entity.Dueno;
 import com.example.model.entity.Veterinario;
+import com.example.model.enums.CitaStatus;
 import com.example.repository.CitaRepository;
 import com.example.repository.DuenoRepository;
 import com.example.repository.VeterinarioRepository;
@@ -59,22 +60,28 @@ public class AdminCitaServiceImpl implements AdminCitaService {
         Veterinario veterinario = veterinarioRepository.findById(veterinarioId)
                 .orElseThrow(() -> new EntityNotFoundException("Veterinario no encontrado con ID: " + veterinarioId));
 
-        // Asignar dueño y veterinario a la cita
+        cita.setEstado(CitaStatus.PENDIENTE);
         cita.setDueno(dueno);
         cita.setVeterinario(veterinario);
 
-        // Guardar y retornar la cita
         return citaRepository.save(cita);
+    }
+
+    @Override
+    public List<Cita> getCitaByDuenoId(Integer duenoId) {
+        return citaRepository.findByDuenoId(duenoId);
+    }
+
+    @Override
+    public List<Cita> getCitaByVeterinarioId(Integer veterinarioId) {
+        return citaRepository.findByVeterinarioId(veterinarioId);
     }
 
     @Transactional
     @Override
     public Cita update(Integer id, Cita updatecita) {
         Cita citaFromDb = findById(id);
-        citaFromDb.setFecha(LocalDateTime.now());
-        citaFromDb.setDescripcion(updatecita.getDescripcion());
         citaFromDb.setEstado(updatecita.getEstado());
-        citaFromDb.setVeterinario(updatecita.getVeterinario());
         return citaRepository.save(citaFromDb);
     }
 
