@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -37,6 +38,18 @@ public class AdminMascotaController {
     public ResponseEntity<Mascota> getMascotasById(@PathVariable("id") Integer id){
         Mascota mascota = adminMascotaService.findById(id);
         return new ResponseEntity<Mascota>(mascota, HttpStatus.OK);
+    }
+
+    @GetMapping("/dueno/{duenoId}")
+    public ResponseEntity<List<MascotaDTO>> getMascotaByDuenoId(@PathVariable("duenoId") Integer duenoId) {
+        List<Mascota> mascotas = adminMascotaService.getCitaByDuenoId(duenoId);
+
+        // Convertir la lista de Cita a CitaDTO
+        List<MascotaDTO> mascotaDTOList = mascotas.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(mascotaDTOList);
     }
 
     @PostMapping
@@ -90,4 +103,16 @@ public class AdminMascotaController {
         adminMascotaService.delete(id);
         return new ResponseEntity<Mascota>(HttpStatus.NO_CONTENT);
     }
+
+    // Método de conversión de Mascota a MascotaDTO
+    private MascotaDTO convertToDTO(Mascota mascota) {
+        MascotaDTO mascotaDTO = new MascotaDTO();
+        mascotaDTO.setNombre(mascota.getNombre());
+        mascotaDTO.setEspecie(mascota.getEspecie());
+        mascotaDTO.setRaza(mascota.getRaza());
+        mascotaDTO.setEdad(mascota.getEdad());
+        mascotaDTO.setDuenoId(mascota.getDueno().getId()); // Acceder al ID del dueño
+        return mascotaDTO;
+    }
+
 }

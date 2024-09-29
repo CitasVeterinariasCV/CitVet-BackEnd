@@ -1,5 +1,4 @@
 package com.example.dto;
-import com.example.model.entity.Dueno;
 import lombok.Data;
 @Data
 public class MascotaDTO {

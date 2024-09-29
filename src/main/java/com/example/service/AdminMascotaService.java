@@ -11,6 +11,7 @@ public interface AdminMascotaService {
     Page<Mascota> paginate(Pageable pageable);
     Mascota findById(Integer id);
     Mascota create(Mascota mascota,Integer duenoId);
+    List<Mascota> getCitaByDuenoId(Integer duenoId);
     Mascota update(Integer id, Mascota updateMascota);
     void delete(Integer id);
 }

@@ -56,6 +56,11 @@ public class AdminMascotaServiceImpl implements AdminMascotaService {
         return mascotaRepository.save(mascota);
     }
 
+    @Override
+    public List<Mascota> getCitaByDuenoId(Integer duenoId) {
+        return mascotaRepository.findByDuenoId(duenoId);
+    }
+
     @Transactional
     @Override
     public Mascota update(Integer id, Mascota updateMascota) {
