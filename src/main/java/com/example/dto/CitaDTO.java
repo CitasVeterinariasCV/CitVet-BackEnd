@@ -13,7 +13,7 @@ public class CitaDTO {
     private LocalDateTime fecha;
 
     @NotBlank(message = "La descripcion es obligatoria!! ")
-    @Size(max = 200, message = "La descripcion deber ser de 200 caracteres o  menos")
+    @Size(max = 200, message = "La descripcion debe ser de 200 caracteres o  menos")
     private String descripcion;
 
     @NotNull(message = "El estado es obligatorio!! ")
