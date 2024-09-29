@@ -59,6 +59,11 @@ public class AdminHorarioDisponibilidadServiceImpl implements AdminHorarioDispon
         return horarioDisponibilidadRepository.save(horarioDisponibilidad);
     }
 
+    @Override
+    public List<Horario_Disponibilidad> getCitaByVeterinarioId(Integer veterinarioId) {
+        return horarioDisponibilidadRepository.findByVeterinarioId(veterinarioId);
+    }
+
     @Transactional
     @Override
     public Horario_Disponibilidad update(Integer id, Horario_Disponibilidad updateHorarioDisponibilidad) {

@@ -11,6 +11,7 @@ public interface AdminHorarioDisponibilidadService {
     Page<Horario_Disponibilidad> paginate(Pageable pageable);
     Horario_Disponibilidad findById(Integer id);
     Horario_Disponibilidad create(Horario_Disponibilidad horarioDisponibilidad,Integer veterinarioId);
+    List<Horario_Disponibilidad> getCitaByVeterinarioId(Integer veterinarioId);
     Horario_Disponibilidad update(Integer id, Horario_Disponibilidad updateHorarioDisponibilidad);
     void delete(Integer id);
 }

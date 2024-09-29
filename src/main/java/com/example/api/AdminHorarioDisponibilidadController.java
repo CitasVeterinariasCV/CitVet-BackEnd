@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -38,6 +39,18 @@ public class AdminHorarioDisponibilidadController {
     public ResponseEntity<Horario_Disponibilidad> getHorariosById(@PathVariable("id") Integer id){
         Horario_Disponibilidad horarioDisponibilidad = adminHorarioDisponibilidadService.findById(id);
         return new ResponseEntity<Horario_Disponibilidad>(horarioDisponibilidad, HttpStatus.OK);
+    }
+
+    @GetMapping("/horarioDisponibilidad/{veterinarioId}")
+    public ResponseEntity<List<Horario_DisponibilidadDTO>> getCitaByVeterinarioId(@PathVariable("veterinarioId") Integer veterinarioId){
+        List<Horario_Disponibilidad> horarios = adminHorarioDisponibilidadService.getCitaByVeterinarioId(veterinarioId);
+
+        // Convertir la lista de Cita a CitaDTO
+        List<Horario_DisponibilidadDTO> horarioDTOList = horarios.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(horarioDTOList);
     }
 
     @PostMapping
@@ -89,4 +102,14 @@ public class AdminHorarioDisponibilidadController {
         adminHorarioDisponibilidadService.delete(id);
         return new ResponseEntity<Horario_Disponibilidad>(HttpStatus.NO_CONTENT);
     }
+
+    // Método de conversión de Horario_Disponibilidad a Horario_DisponibilidadDTO
+    private Horario_DisponibilidadDTO convertToDTO(Horario_Disponibilidad horario) {
+        Horario_DisponibilidadDTO horarioDTO = new Horario_DisponibilidadDTO();
+        horarioDTO.setHora_inicio(horario.getHora_inicio());
+        horarioDTO.setHora_fin(horario.getHora_fin());
+        horarioDTO.setVeterinarioId(horario.getVeterinario().getId()); // Acceder al ID del veterinario
+        return horarioDTO;
+    }
+
 }
