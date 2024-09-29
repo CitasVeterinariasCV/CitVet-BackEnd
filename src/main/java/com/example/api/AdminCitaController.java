@@ -21,103 +21,57 @@ public class AdminCitaController {
     private final AdminCitaService adminCitaService;
 
     @GetMapping
-    public ResponseEntity<List<Cita>> getAllCitas(){
-        List<Cita> citas = adminCitaService.getAll();
-        return new ResponseEntity<List<Cita>>(citas, HttpStatus.OK);
+    public ResponseEntity<List<CitaDTO>> getAllCitas(){
+        List<CitaDTO> citas = adminCitaService.getAll();
+        return ResponseEntity.ok(citas);
 
     }
 
     @GetMapping("/page")
-    public ResponseEntity<Page<Cita>> paginateCitas(
-            @PageableDefault(size = 2, sort = "fecha")Pageable pageable){
-        Page<Cita> citas = adminCitaService.paginate(pageable);
-        return new ResponseEntity<Page<Cita>>(citas,HttpStatus.OK);
+    public ResponseEntity<Page<CitaDTO>> paginateCitas(@PageableDefault(size = 2, sort = "fecha") Pageable pageable) {
+        Page<CitaDTO> citas = adminCitaService.paginate(pageable);
+        return ResponseEntity.ok(citas);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cita> getCitasById(@PathVariable("id") Integer id){
-        Cita cita = adminCitaService.findById(id);
-        return new ResponseEntity<Cita>(cita, HttpStatus.OK);
-
+    public ResponseEntity<CitaDTO> getCitasById(@PathVariable("id") Integer id) {
+        CitaDTO cita = adminCitaService.findById(id);
+        return ResponseEntity.ok(cita);
     }
 
     @GetMapping("/dueno/{duenoId}")
     public ResponseEntity<List<CitaDTO>> getCitaByDuenoId(@PathVariable("duenoId") Integer duenoId) {
-        List<Cita> citas = adminCitaService.getCitaByDuenoId(duenoId);
-
-        // Convertir la lista de Cita a CitaDTO
-        List<CitaDTO> citaDTOList = citas.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(citaDTOList);
+        List<CitaDTO> citas = adminCitaService.getCitaByDuenoId(duenoId);
+        return ResponseEntity.ok(citas);
     }
 
     @GetMapping("/veterinario/{veterinarioId}")
-    public ResponseEntity<List<CitaDTO>> getCitaByVeterinarioId(@PathVariable("veterinarioId") Integer veterinarioId){
-        List<Cita> citas = adminCitaService.getCitaByVeterinarioId(veterinarioId);
-
-        // Convertir la lista de Cita a CitaDTO
-        List<CitaDTO> citaDTOList = citas.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(citaDTOList);
+    public ResponseEntity<List<CitaDTO>> getCitaByVeterinarioId(@PathVariable("veterinarioId") Integer veterinarioId) {
+        List<CitaDTO> citas = adminCitaService.getCitaByVeterinarioId(veterinarioId);
+        return ResponseEntity.ok(citas);
     }
 
     @PostMapping
-    public ResponseEntity<Cita> createCita(@RequestBody CitaDTO citaDTO) {
-            // Validación básica de campos nulos
-        if (citaDTO == null || citaDTO.getFecha() == null ||
-                citaDTO.getDuenoId() == null || citaDTO.getVeterinarioId() == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<CitaDTO> createCita(@RequestBody CitaDTO citaDTO) {
         try {
-            // Crear la nueva entidad Cita
-            Cita cita = new Cita();
-            cita.setFecha(citaDTO.getFecha());
-            cita.setDescripcion(citaDTO.getDescripcion());
-
-            // Llamar al servicio para guardar la cita
-            Cita newCita = adminCitaService.create(cita, citaDTO.getDuenoId(), citaDTO.getVeterinarioId());
-
-            // Retornar la respuesta con el nuevo objeto creado
+            CitaDTO newCita = adminCitaService.create(citaDTO, citaDTO.getDuenoId(), citaDTO.getVeterinarioId());
             return new ResponseEntity<>(newCita, HttpStatus.CREATED);
         } catch (EntityNotFoundException e) {
-            // Manejar el caso en que no se encuentra el dueño o veterinario
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException e) {
-            // Manejar el caso en que se pasa un argumento inválido
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            // Manejo general de excepciones
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cita> updateCita(@PathVariable("id") Integer id,
-                                           @RequestBody Cita cita){
-        Cita updateCita = adminCitaService.update(id,cita);
-        return new ResponseEntity<Cita>(updateCita,HttpStatus.OK);
-
+    public ResponseEntity<CitaDTO> updateCita(@PathVariable("id") Integer id, @RequestBody CitaDTO citaDTO) {
+        CitaDTO updatedCita = adminCitaService.update(id, citaDTO);
+        return ResponseEntity.ok(updatedCita);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Cita> deleteCita(@PathVariable("id") Integer id){
+    public ResponseEntity<Void> deleteCita(@PathVariable("id") Integer id) {
         adminCitaService.delete(id);
-        return new ResponseEntity<Cita>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-    private CitaDTO convertToDTO(Cita cita) {
-        CitaDTO citaDTO = new CitaDTO();
-        citaDTO.setFecha(cita.getFecha());
-        citaDTO.setDescripcion(cita.getDescripcion());
-        citaDTO.setEstado(cita.getEstado());
-        citaDTO.setDuenoId(cita.getDueno().getId());
-        citaDTO.setVeterinarioId(cita.getVeterinario().getId());
-        return citaDTO;
-    }
-
 }
